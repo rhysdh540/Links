@@ -13,6 +13,8 @@
 		9864A3802CA0A88900F51245 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9864A37F2CA0A88900F51245 /* ContentView.swift */; };
 		9864A3822CA0A88A00F51245 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9864A3812CA0A88A00F51245 /* Assets.xcassets */; };
 		9864A3852CA0A88A00F51245 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9864A3842CA0A88A00F51245 /* Preview Assets.xcassets */; };
+		9864A3942CA0C63600F51245 /* Link.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9864A3932CA0C63600F51245 /* Link.swift */; };
+		9864A3962CA0C65C00F51245 /* LinkFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9864A3952CA0C65C00F51245 /* LinkFormView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		9864A37F2CA0A88900F51245 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9864A3812CA0A88A00F51245 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9864A3842CA0A88A00F51245 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		9864A3932CA0C63600F51245 /* Link.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Link.swift; sourceTree = "<group>"; };
+		9864A3952CA0C65C00F51245 /* LinkFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkFormView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,8 +87,10 @@
 			children = (
 				9864A37D2CA0A88900F51245 /* LinksApp.swift */,
 				9864A37F2CA0A88900F51245 /* ContentView.swift */,
+				9864A3952CA0C65C00F51245 /* LinkFormView.swift */,
 				9864A3812CA0A88A00F51245 /* Assets.xcassets */,
 				9864A3832CA0A88A00F51245 /* Preview Content */,
+				9864A3932CA0C63600F51245 /* Link.swift */,
 			);
 			path = "Links Watch App";
 			sourceTree = "<group>";
@@ -196,7 +202,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9864A3942CA0C63600F51245 /* Link.swift in Sources */,
 				9864A3802CA0A88900F51245 /* ContentView.swift in Sources */,
+				9864A3962CA0C65C00F51245 /* LinkFormView.swift in Sources */,
 				9864A37E2CA0A88900F51245 /* LinksApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

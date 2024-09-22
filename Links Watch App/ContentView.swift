@@ -10,21 +10,11 @@ import SwiftUI
 import AuthenticationServices
 import os.log
 
-struct Link: Identifiable, Codable {
-    init(title: String, url: URL) {
-        self.id = UUID()
-        self.title = title
-        self.url = url
-    }
-    
-    let id: UUID
-    var title: String
-    var url: URL
-}
-
 struct ContentView: View {
     @State private var links = [Link]()
-    @State private var showAddPopup = false
+    @State private var showLinkForm = false
+    @State private var linkToEdit: Link? = nil
+    @State private var linkFormMode: LinkFormMode = .add
 
     private let log = Logger(
         subsystem: "dev.rdh.Links-Watch-App",
@@ -36,27 +26,63 @@ struct ContentView: View {
             List {
                 ForEach(links) { link in
                     LinkItem(link: link)
+                        .swipeActions {
+                            Button(action: {
+                                linkToEdit = link
+                                linkFormMode = .edit
+                                DispatchQueue.main.async {
+                                    showLinkForm = true
+                                }
+                            }) {
+                                Label("Edit", systemImage: "ellipsis")
+                            }
+                        }
                 }
             }
             .navigationTitle("Links")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(action: { showAddPopup = true }) {
+                    Button(action: {
+                        linkFormMode = .add
+                        linkToEdit = nil
+                        showLinkForm = true
+                    }) {
                         Image(systemName: "plus")
                     }
                 }
             }
-            .sheet(isPresented: $showAddPopup) {
-                AddLinkView { title, url in
-                    let newLink = Link(title: title, url: url)
-                    links.append(newLink)
-                    showAddPopup = false
-                    log.info("Added link: \(title) - \(url)")
-                    saveLinks()
+            .sheet(isPresented: $showLinkForm) {
+                LinkFormView(mode: linkFormMode, link: linkToEdit) { action in
+                    handleLinkFormAction(action)
                 }
             }
             .onAppear(perform: loadLinks)
         }
+    }
+
+    func handleLinkFormAction(_ action: LinkFormAction) {
+        switch action {
+        case .add(let newLink):
+            links.append(newLink)
+            log.info("Added link: \(newLink.title) - \(newLink.url)")
+            saveLinks()
+        case .update(let updatedLink):
+            if let index = links.firstIndex(where: { $0.id == updatedLink.id }) {
+                links[index] = updatedLink
+                log.info("Updated link: \(updatedLink.title) - \(updatedLink.url)")
+                saveLinks()
+            }
+        case .delete(let linkToDelete):
+            if let index = links.firstIndex(where: { $0.id == linkToDelete.id }) {
+                links.remove(at: index)
+                log.info("Deleted link: \(linkToDelete.title) - \(linkToDelete.url)")
+                saveLinks()
+            }
+        case .cancel:
+            break
+        }
+        linkToEdit = nil
+        showLinkForm = false
     }
 
     func saveLinks() {
@@ -81,63 +107,12 @@ struct ContentView: View {
     }
 }
 
-struct AddLinkView: View {
-    @State private var title = ""
-    @State private var url = ""
-    @State private var errorMessage = ""
-    @State private var showErrorMessage = false
-    let onAdd: (String, URL) -> Void
-
-    var body: some View {
-        NavigationView {
-            Form {
-                TextField("Title", text: $title)
-                TextField("URL", text: $url)
-            }
-            .navigationTitle("Add Link")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(action: go) {
-                        Image(systemName: "plus")
-                    }
-                }
-            }.alert(isPresented: $showErrorMessage) {
-                Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
-            }
-        }
-    }
-
-    func go() {
-        if url.isEmpty {
-            errorMessage = "URL is required"
-            showErrorMessage = true
-        } else {
-            // Use URL as title if title is empty
-            // Do this before adding http:// or https:// to the URL
-            if title.isEmpty {
-                title = url
-            }
-
-            if !url.hasPrefix("http://") && !url.hasPrefix("https://") {
-                url = "https://\(url)"
-            }
-
-            if let url = URL(string: url) {
-                onAdd(title, url)
-            } else {
-                errorMessage = "Invalid URL: \(url)"
-                showErrorMessage = true
-            }
-        }
-    }
-}
-
 struct LinkItem: View {
     var link: Link
 
     var body: some View {
         Button(action: {
-            let session = ASWebAuthenticationSession(url: link.url, callbackURLScheme: nil) { _, _ in}
+            let session = ASWebAuthenticationSession(url: link.url, callbackURLScheme: nil) { _, _ in }
             session.prefersEphemeralWebBrowserSession = true
             session.start()
         }) {
