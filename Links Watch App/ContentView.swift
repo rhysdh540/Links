@@ -6,16 +6,35 @@
 //
 
 import SwiftUI
+import AuthenticationServices
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        // hardcoded links for now - duckduckgo.com and apple.com
+
+        let links = [
+            Link(title: "DuckDuckGo", url: URL(string: "https://duckduckgo.com")!),
+            Link(title: "Apple", url: URL(string: "https://apple.com")!)
+        ]
+
+        List(links) { link in
+            LinkView(link: link)
         }
-        .padding()
+                .navigationTitle("Links")
+    }
+}
+
+struct LinkView: View {
+    var link: Link
+
+    var body: some View {
+        Button(action: {
+            let session = ASWebAuthenticationSession(url: link.url, callbackURLScheme: nil) { _, _ in}
+            session.prefersEphemeralWebBrowserSession = true
+            session.start()
+        }) {
+            Text(link.title)
+        }
     }
 }
 
