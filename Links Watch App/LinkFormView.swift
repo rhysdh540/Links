@@ -2,7 +2,7 @@
 //  LinkFormView.swift
 //  Links Watch App
 //
-//  Created by Rhys de Haan on 9/22/24.
+//  Created by rdh on 9/22/24.
 //
 
 import SwiftUI
@@ -82,12 +82,12 @@ struct LinkFormView: View {
             showErrorMessage = true
             return
         }
-        
+
         var formattedURL = url.trimmingCharacters(in: .whitespaces).lowercased()
         if !formattedURL.hasPrefix("http://") && !formattedURL.hasPrefix("https://") {
             formattedURL = "https://\(formattedURL)"
         }
-        
+
         guard let validURL = URL(string: formattedURL) else {
             errorMessage = "Invalid URL: \(formattedURL)"
             showErrorMessage = true
@@ -108,7 +108,7 @@ struct LinkFormView: View {
         } else {
             finalTitle = title
         }
-        
+
         if mode == .add {
             let newLink = Link(title: finalTitle, url: validURL)
             onComplete(.add(newLink))
@@ -117,7 +117,7 @@ struct LinkFormView: View {
             onComplete(.update(updatedLink))
         }
     }
-    
+
     func deleteLink() {
         if let originalLink = originalLink {
             onComplete(.delete(originalLink))
