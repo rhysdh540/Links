@@ -15,6 +15,8 @@ struct ContentView: View {
     @State private var showLinkForm = false
     @State private var linkToEdit: Link? = nil
     @State private var linkFormMode: LinkFormMode = .add
+    
+    static let KEY = "dev.rdh.Links.links"
 
     private let log = Logger(
         subsystem: "dev.rdh.Links-Watch-App",
@@ -88,7 +90,7 @@ struct ContentView: View {
     func saveLinks() {
         do {
             let data = try JSONEncoder().encode(links)
-            UserDefaults.group.set(data, forKey: "links")
+            UserDefaults.standard.set(data, forKey: ContentView.KEY)
             log.info("Saved \(links.count) links")
         } catch {
             log.error("Failed to save links: \(error)")
@@ -96,7 +98,7 @@ struct ContentView: View {
     }
 
     func loadLinks() {
-        if let data = UserDefaults.group.data(forKey: "links") {
+        if let data = UserDefaults.standard.data(forKey: ContentView.KEY) {
             do {
                 links = try JSONDecoder().decode([Link].self, from: data)
                 log.info("Loaded \(links.count) links")
